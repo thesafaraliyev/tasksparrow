@@ -13,13 +13,13 @@
             <li class="nav-item {{ request()->routeIs('home') ? 'active': '' }}">
                 <a class="nav-link" href="{{ route('home') }}">Home <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item {{ request()->routeIs('taskAdd') ? 'active': '' }}">
                 <a class="nav-link" href="{{ route('taskAdd') }}">Create task</a>
             </li>
         </ul>
 
         <ul class="navbar-nav">
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a href="#" class="nav-link">{{ Auth::user()->email }}</a>
             </li>
             <form action="{{ route('logout') }}" method="post">

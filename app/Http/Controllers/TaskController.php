@@ -6,6 +6,7 @@ use App\Http\Requests\StoreTask;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class TaskController extends Controller
 {
@@ -32,32 +33,48 @@ class TaskController extends Controller
     }
 
 
-    public function show($id)
+    public function show(Task $task)
     {
-        //
+        Gate::authorize('view', $task);
+
+        return view('task.show', ['task' => $task]);
     }
 
 
-    public function change($id)
+    public function edit(Task $task)
     {
-        //
+        Gate::authorize('myTask', $task);
+
+        return view('task.edit', ['task' => $task]);
     }
 
 
-    public function update(Request $request, $id)
+    public function update(StoreTask $request, Task $task)
     {
-        //
+        Gate::authorize('myTask', $task);
+
+        $task->title = $request->input('title');
+        $task->deadline = $request->input('deadline');
+        $task->description = $request->input('description');
+        $task->save();
+
+        return redirect()->route('home')->with('success', 'Task successfully updated.');
     }
 
 
-    public function delete($id)
+    public function delete(Task $task)
     {
-        //
+        Gate::authorize('myTask', $task);
+
+        return view('task.delete', ['task' => $task]);
     }
 
 
-    public function destroy($id)
+    public function destroy(Task $task)
     {
-        //
+        Gate::authorize('myTask', $task);
+        $task->delete();
+
+        return redirect()->route('home')->with('success', 'Task successfully deleted.');
     }
 }

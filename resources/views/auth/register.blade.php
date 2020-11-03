@@ -23,6 +23,7 @@
                     placeholder="email address"
                     required
                     aria-describedby="name-validation"
+                    value="{{ old('name') }}"
                     autofocus>
                 <label for="name">Name</label>
                 @error('name')
@@ -41,6 +42,7 @@
                     placeholder="Email address"
                     required
                     autofocus
+                    value="{{ old('email') }}"
                     aria-describedby="email-validation">
                 <label for="email">Email address</label>
                 @error('email')
@@ -58,6 +60,7 @@
                     class="form-control @error('password') is-invalid @enderror"
                     placeholder="Password"
                     required
+                    value="{{ old('password') }}"
                     aria-describedby="password-validation">
                 <label for="password">Password</label>
                 @error('password')

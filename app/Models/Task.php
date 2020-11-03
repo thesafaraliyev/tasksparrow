@@ -19,8 +19,14 @@ class Task extends Model
     ];
 
 
-    public function user()
+    public function author()
     {
         return $this->belongsTo('App\Models\User');
+    }
+
+
+    public function attachedUsers()
+    {
+        return $this->hasMany('App\Models\UserTask');
     }
 }
