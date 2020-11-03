@@ -29,6 +29,11 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout/', [AuthController::class, 'logout'])->name('logout');
 
+
     Route::get('/', [TaskController::class, 'index'])->name('home');
+
     Route::get('/task/add/', [TaskController::class, 'add'])->name('taskAdd');
+    Route::post('/task/store/', [TaskController::class, 'store'])->name('taskStore');
+
+    Route::get('task/{task}/show', [TaskController::class, 'show'])->name('taskShow');
 });

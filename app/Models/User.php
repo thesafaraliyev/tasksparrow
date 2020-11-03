@@ -43,7 +43,13 @@ class User extends Authenticatable
     ];
 
 
-    public function add(array $data): User
+    public function tasks()
+    {
+        return $this->hasMany('App\Models\Task');
+    }
+
+
+    public function create(array $data): User
     {
         $user = new User([
             'name' => $data['name'],

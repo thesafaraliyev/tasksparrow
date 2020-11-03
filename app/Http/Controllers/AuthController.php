@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Login;
-use App\Http\Requests\Register;
+use App\Http\Requests\AuthenticateUser;
+use App\Http\Requests\StoreUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,9 +16,9 @@ class AuthController extends Controller
     }
 
 
-    public function signUp(Register $request, User $user)
+    public function signUp(StoreUser $request, User $user)
     {
-        Auth::login($user->add($request->validated()));
+        Auth::login($user->create($request->validated()));
 
         return redirect()->route('home');
     }
@@ -30,7 +30,7 @@ class AuthController extends Controller
     }
 
 
-    public function signIn(Login $request)
+    public function signIn(AuthenticateUser $request)
     {
         if (Auth::attempt($request->only('email', 'password'), $request->has('remember'))) {
             return redirect()->intended(route('home'));
