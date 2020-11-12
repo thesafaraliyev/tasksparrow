@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -21,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'username',
     ];
 
     /**
@@ -60,10 +62,17 @@ class User extends Authenticatable
         $user = new User([
             'name' => $data['name'],
             'email' => $data['email'],
+            'username' => Str::slug($data['name']),
             'password' => Hash::make($data['password']),
         ]);
         $user->save();
 
         return $user;
+    }
+
+
+    public function findUserByIdentifier($identifier)
+    {
+        return $this::where('email', $identifier)->orWhere('username', $identifier)->first();
     }
 }

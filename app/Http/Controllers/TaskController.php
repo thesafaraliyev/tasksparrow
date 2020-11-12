@@ -12,9 +12,13 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $tasks = Auth::user()->tasks;
+        return view('task/home', ['tasks' => Auth::user()->tasks]);
+    }
 
-        return view('task/home', ['tasks' => $tasks]);
+
+    public function attachedTasks()
+    {
+        return view('task/attached-tasks', ['attachedTasks' => Auth::user()->attachedTasks]);
     }
 
 
