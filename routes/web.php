@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserTaskController;
+use App\Http\Controllers\TaskCommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +46,13 @@ Route::middleware('auth')->group(function () {
             Route::get('/', [UserTaskController::class, 'index'])->name('userTask');
             Route::post('store', [UserTaskController::class, 'store'])->name('userTaskStore');
             Route::post('destroy/{userTask}', [UserTaskController::class, 'destroy'])->name('userTaskDestroy');
+        });
+
+        Route::prefix('comments')->group(function () {
+            Route::get('/', [TaskCommentController::class, 'index'])->name('taskComment');
+            Route::post('store', [TaskCommentController::class, 'store'])->name('taskCommentStore');
+            Route::post('update/{taskComment}', [TaskCommentController::class, 'update'])->name('taskCommentUpdate');
+            Route::post('destroy/{taskComment}', [TaskCommentController::class, 'destroy'])->name('taskCommentDestroy');
         });
     });
 });

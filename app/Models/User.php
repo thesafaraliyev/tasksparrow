@@ -57,6 +57,12 @@ class User extends Authenticatable
     }
 
 
+    public function comments()
+    {
+        return $this->hasMany('App\Models\TaskComment');
+    }
+
+
     public function create(array $data): User
     {
         $user = new User([

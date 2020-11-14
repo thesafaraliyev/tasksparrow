@@ -29,4 +29,10 @@ class Task extends Model
     {
         return $this->hasMany('App\Models\UserTask');
     }
+
+
+    public function comments()
+    {
+        return $this->hasMany('App\Models\TaskComment');
+    }
 }
