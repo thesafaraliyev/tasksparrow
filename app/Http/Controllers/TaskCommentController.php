@@ -14,9 +14,8 @@ class TaskCommentController extends Controller
     {
         Gate::authorize('view', $task);
 
-        $comments = $task->comments()->orderBy('updated_at', 'desc')->get();
-        $comments = TaskComment::prepComments($comments);
-        return response()->json(['status' => true, 'comments' => $comments]);
+        $comments = $task->comments()->orderBy('id', 'desc')->get();
+        return response()->json(['status' => true, 'comments' => TaskComment::prepComments($comments)]);
     }
 
 
