@@ -6,6 +6,8 @@ use App\Http\Requests\StoreUserTask;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\UserTask;
+use App\Mail\TaskDeadlineNotification;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -27,6 +29,10 @@ class UserTaskController extends Controller
         }
 
         $userTaskModel->create($task, $user, $request->input('canComment') ? 1 : 0);
+
+        $deadline = new \DateTime($task->deadline);
+        $deadline->modify('-10 minutes');
+        Mail::to($user)->later($deadline, new TaskDeadlineNotification($task, $user));
 
         return redirect()->back()->with('success', 'User successfully attached to the task.');
     }
