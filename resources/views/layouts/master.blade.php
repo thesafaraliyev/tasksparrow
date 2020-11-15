@@ -53,7 +53,12 @@
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
+    const dd = vars => {
+        console.log(vars)
+    }
 </script>
+<script src="{{ asset('js/app.js') }}"></script>
 
 <div class="container p-3">
     @yield('content')

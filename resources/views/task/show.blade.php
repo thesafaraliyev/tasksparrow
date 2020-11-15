@@ -40,13 +40,15 @@
             <!-- comment textarea -->
 
             <!-- comments list -->
-
             <div class="list-group" id="comments"></div>
+            <!-- comments list -->
+
         </div>
         <!-- comments -->
     </div>
 
     <script>
+        const TASK_ID = parseInt('{{ $task->id }}');
         const TASK_AUTHOR_ID = parseInt('{{ $task->author_id }}');
         const USER_ID = parseInt('{{ \Illuminate\Support\Facades\Auth::id() }}');
         const URL = '{{ route('taskComment', ['task' => $task]) }}';
@@ -55,9 +57,6 @@
         const COMMENT_CONTAINER = $('#comments');
         const SEND_COMMENT_BTN = $('#send-comment');
         const CANCEL_EDIT = $('#cancel-edit');
-        const dd = vars => {
-            console.log(vars)
-        }
 
         let selectedComment = null;
 
@@ -77,9 +76,9 @@
             event.preventDefault();
 
             if (confirm('are you sure to delete this comment?')) {
-                const $this = $(this);
-                $.post(`${URL}/destroy/${$this.data('id')}`).done(response => {
-                    response.status ? $this.parents('div.c-row').remove() : alert('Something went wrong.');
+                const id = parseInt($(this).data('id'));
+                $.post(`${URL}/destroy/${id}`).done(response => {
+                    response.status ? deleteComment(id) : alert('Something went wrong.');
 
                 }).fail((xhr, status, error) => {
                     alert(xhr.responseJSON.message);
@@ -90,11 +89,9 @@
 
         BODY.on('click', '.js-c-edit', function (event) {
             event.preventDefault();
-            const $this = $(this);
-            selectedComment = $this.data('id');
-
+            selectedComment = parseInt($(this).data('id'));
             CANCEL_EDIT.prop('disabled', false);
-            COMMENT_TEXTAREA.val($this.parents('div.c-row').find('p.js-c-placeholder').text()).change().focus();
+            COMMENT_TEXTAREA.val(BODY.find(`.js-c-message-${selectedComment}`).text()).change().focus();
         });
 
 
@@ -105,7 +102,7 @@
         });
 
 
-        COMMENT_TEXTAREA.on('change keyup', function (event) {
+        COMMENT_TEXTAREA.on('change keyup', function () {
             SEND_COMMENT_BTN.prop('disabled', !$(this).val());
         });
 
@@ -117,18 +114,16 @@
                 return false;
             }
 
+            COMMENT_TEXTAREA.val('').change();
+            CANCEL_EDIT.prop('disabled', true);
+
             const urlSuffix = selectedComment ? `update/${selectedComment}` : 'store';
             $.post(`${URL}/${urlSuffix}`, {message}).done(response => {
                 if (response.status) {
-                    selectedComment
-                        ? updateCommentRow(response.comment)
-                        : COMMENT_CONTAINER.prepend(commentHtml(response.comment));
+                    selectedComment ? updateComment(response.comment) : addComment(response.comment);
                 } else {
                     alert('Something went wrong');
                 }
-
-                COMMENT_TEXTAREA.val('').change();
-                CANCEL_EDIT.prop('disabled', true);
                 selectedComment = null;
 
             }).fail((xhr, status, error) => {
@@ -137,10 +132,32 @@
         });
 
 
-        const updateCommentRow = comment => {
-            BODY.find(`.js-c-row-${selectedComment}`).text(comment.message);
-            BODY.find(`.js-c-row-date-${selectedComment}`).text(comment.date);
-        }
+        Echo.private(`task.${TASK_ID}`)
+            .listen('TaskCommentAdded', comment => {
+                addComment(comment);
+            })
+            .listen('TaskCommentUpdated', comment => {
+                updateComment(comment)
+            })
+            .listen('TaskCommentDeleted', comment => {
+                deleteComment(comment.id)
+            });
+
+
+        const addComment = comment => {
+            COMMENT_CONTAINER.prepend(commentHtml(comment))
+        };
+
+
+        const updateComment = comment => {
+            BODY.find(`.js-c-date-${comment.id}`).text(comment.date);
+            BODY.find(`.js-c-message-${comment.id}`).text(comment.message);
+        };
+
+
+        const deleteComment = rowId => {
+            BODY.find(`.js-c-item-${rowId}`).remove();
+        };
 
 
         const commentHtml = comment => {
@@ -155,12 +172,12 @@
             }
 
             return `
-                <div class="list-group-item c-row">
+                <div class="list-group-item js-c-item-${comment.id}">
                     <div class="d-flex w-100 justify-content-between">
                         <small class="mb-1">${comment.username}</small>
-                        <small class="js-c-row-date-${comment.id}">${comment.date}</small>
+                        <small class="js-c-date-${comment.id}">${comment.date}</small>
                     </div>
-                    <p class="mb-1 js-c-placeholder js-c-row-${comment.id}">${comment.message}</p>
+                    <p class="mb-1 js-c-message-${comment.id}">${comment.message}</p>
                     ${actions}
                 </div>`
         };
