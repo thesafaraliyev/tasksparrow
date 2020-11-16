@@ -13,10 +13,10 @@ class CreateTaskCommentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('task_comments', function (Blueprint $table) {
+        Schema::connection('comment')->create('task_comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('task_id')->constrained()->onDelete('cascade');
+            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('task_id');
             $table->text('message');
             $table->timestamps();
         });

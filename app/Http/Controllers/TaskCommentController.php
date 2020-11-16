@@ -54,7 +54,7 @@ class TaskCommentController extends Controller
     public function destroy(Task $task, TaskComment $taskComment)
     {
         Gate::authorize('view', $task);
-        Gate::authorize('myCommentOrTaskAuthor', $taskComment);
+        Gate::authorize('myCommentOrTaskAuthor', [$taskComment, $task]);
 
         $taskComment->delete();
 

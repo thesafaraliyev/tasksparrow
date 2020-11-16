@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Task;
 use App\Models\TaskComment;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -16,8 +17,8 @@ class TaskCommentPolicy
     }
 
 
-    public function myCommentOrTaskAuthor(User $user, TaskComment $taskComment)
+    public function myCommentOrTaskAuthor(User $user, TaskComment $taskComment, Task $task)
     {
-        return $user->id === $taskComment->user_id || $user->id == $taskComment->task->author_id;
+        return $this->myComment($user, $taskComment) || $user->id == $task->author_id;
     }
 }

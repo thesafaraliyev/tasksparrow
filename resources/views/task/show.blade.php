@@ -31,12 +31,14 @@
         <!-- comments -->
         <div class="col-md-8">
             <!-- comment textarea -->
-            <div class="mb-2 text-right">
-                <textarea id="comment-textarea" cols="30" rows="3" class="form-control mb-2"
-                          placeholder="Your comment.."></textarea>
-                <button type="button" class="btn btn-sm btn-light" id="cancel-edit" disabled>Cancel edit</button>
-                <button type="button" class="btn btn-sm btn-outline-dark" id="send-comment" disabled>Send</button>
-            </div>
+            @if($canComment)
+                <div class="mb-2 text-right">
+                    <textarea id="comment-textarea" cols="30" rows="3" class="form-control mb-2"
+                              placeholder="Your comment.."></textarea>
+                    <button type="button" class="btn btn-sm btn-light" id="cancel-edit" disabled>Cancel edit</button>
+                    <button type="button" class="btn btn-sm btn-outline-dark" id="send-comment" disabled>Send</button>
+                </div>
+            @endif
             <!-- comment textarea -->
 
             <!-- comments list -->

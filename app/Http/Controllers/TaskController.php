@@ -40,8 +40,7 @@ class TaskController extends Controller
     public function show(Task $task)
     {
         Gate::authorize('view', $task);
-
-        return view('task.show', ['task' => $task]);
+        return view('task.show', ['task' => $task, 'canComment' => Gate::allows('canComment', $task)]);
     }
 
 

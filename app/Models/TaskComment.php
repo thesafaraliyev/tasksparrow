@@ -9,6 +9,10 @@ class TaskComment extends Model
 {
     use HasFactory;
 
+    public $incrementing = true;
+
+    protected $connection = 'comment';
+
     protected $fillable = [
         'user_id',
         'task_id',
@@ -18,17 +22,17 @@ class TaskComment extends Model
 
     public function user()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->setConnection(env('DB_DATABASE'))->belongsTo('App\Models\User');
     }
 
 
     public function task()
     {
-        return $this->belongsTo('App\Models\Task');
+        return $this->setConnection(env('DB_DATABASE'))->belongsTo('App\Models\Task');
     }
 
 
-    public static function prepComment($comment)
+    public static function prepComment(TaskComment $comment)
     {
         return [
             'id' => $comment->id,
