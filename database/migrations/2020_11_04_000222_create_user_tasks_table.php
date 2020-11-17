@@ -18,7 +18,7 @@ class CreateUserTasksTable extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('task_id')->constrained()->onDelete('cascade');
             $table->boolean('can_comment')->default(false);
-            $table->unique(['user_id', 'task_id', 'can_comment']);
+            $table->unique(['user_id', 'task_id']);
         });
     }
 
